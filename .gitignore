@@ -1,3 +1,6 @@
 .DS_Store
 vendor
 .idea
+upload/ktp_image/**
+upload/ktp_selfie/**
+upload/payment_proof/**
