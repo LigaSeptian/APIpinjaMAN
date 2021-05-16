@@ -86,4 +86,41 @@ class User extends REST_Controller
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    public function login_post()
+    {
+        $data = [
+            'email' => $this->post('email'),
+            'pin' => $this->post('pin')
+        ];
+        $auth = $this->user_model->login($data);
+
+        if (!$auth){
+            $this->response([
+                'status' => 'Error',
+                'message' => 'Login failed'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            $expired = date_add(new DateTime(date('Y-m-d')), date_interval_create_from_date_string("30 days"));
+            
+            $token = [
+                'nik' => $auth['nik'],
+                'email' => $auth['email'],
+                'role' => $auth['role'],
+                
+                'expired_at' =>$expired->format('Y-m-d H:i:s'),
+            ];
+            $token = json_encode($token);
+            $token = base64_encode($token);
+            $this->response([
+                'data'=> [
+                    'nik' => $auth['nik'],
+                    'email' => $auth['email'],
+                    'role' => $auth['role'],
+                    'token' => $token,
+                ],
+                'status' => 'Error',
+                'message' => 'Login success'
+            ], REST_Controller::HTTP_OK);
+        }
+    }
 }
