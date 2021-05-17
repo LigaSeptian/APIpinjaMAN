@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 17 Bulan Mei 2021 pada 20.14
+-- Waktu pembuatan: 17 Bulan Mei 2021 pada 20.36
 -- Versi server: 10.4.17-MariaDB
 -- Versi PHP: 7.4.15
 
@@ -36,10 +36,17 @@ CREATE TABLE `transactions` (
   `total_pinjaman` int(11) NOT NULL,
   `bank` enum('BCA','BNI','BRI','') NOT NULL,
   `no_rekening` varchar(20) NOT NULL,
-  `status` varchar(20) NOT NULL,
+  `status` enum('belum dibayar','menunggu konfirmasi','dibayar') NOT NULL DEFAULT 'belum dibayar',
   `waktu_pembayaran` datetime DEFAULT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `nik`, `jumlah`, `tenggat_waktu`, `biaya_admin`, `total_pinjaman`, `bank`, `no_rekening`, `status`, `waktu_pembayaran`, `date_created`) VALUES
+(9, '1234567890123456', 1500000, '2021-06-08', 1500, 1500000, 'BCA', '00000000', 'dibayar', '2021-05-18 01:29:28', '2021-05-17 18:32:11');
 
 -- --------------------------------------------------------
 
@@ -70,6 +77,13 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`nik`, `nama`, `no_telepon`, `email`, `nama_orang_tua`, `pendidikan_terakhir`, `status_perkawinan`, `alamat`, `nama_perusahaan`, `status_pekerjaan`, `posisi`, `lama_bekerja`, `penghasilan_per_bulan`, `pin`, `role`, `limit_pinjaman`, `sisa_limit`, `status`, `date_created`) VALUES
+('1234567890123456', 'uzumaki naruto', '081367631999', '93rezao@gmail.com', 'minato', 's3', 'kawin', 'desa konoha, uzumaki naruto', 'kantor hokage konoha', 'pekerja tetap', 'hokage', 2, 10000000, '101010', 'user', 2000000, 500000, 'accepted', '2021-05-17 18:29:00');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -95,7 +109,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
