@@ -202,4 +202,29 @@ class User extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
+
+    public function transactions_get($nik)
+    {
+        function mapResult($array)
+        {
+            return [
+                'id' => $array['id'],
+                'amount' => $array['jumlah'],
+                'admin_fee' => $array['biaya_admin'],
+                'total' => $array['total_pinjaman'],
+                'deadline' => $array['tenggat_waktu']
+            ];
+        }
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+                $transactions = $this->transaction_model->get_transactions_by_nik($nik);
+                $result = array_map('mapResult', $transactions);
+                $this->response($result);
+            }
+        }
+        $this->response([
+            'status' => 'Authorization failed'
+        ], REST_Controller::HTTP_FORBIDDEN);
+    }
 }
