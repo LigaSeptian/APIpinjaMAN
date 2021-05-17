@@ -56,4 +56,49 @@ class Admin extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
+
+    public function history_get()
+    {
+        function mapResultRegistration($array)
+        {
+            return [
+                'type' => 'registration',
+                'data' => [
+                    'nik' => $array['nik'],
+                    'registration_date' => $array['date_created'],
+                    'status' => $array['status']
+                ]
+            ];
+        }
+        function mapResultTransaction($array)
+        {
+            return [
+                'type' => 'payment',
+                'data' => [
+                    'nik' => $array['nik'],
+                    'transaction_id' => $array['id'],
+                    'payment_deadline' => $array['waktu_pembayaran'],
+                    'status' => $array['status']
+                ]
+            ];
+        }
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user['role'] == 'admin' && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+                $transactionsAccepted = $this->transaction_model->get_transactions_accepted();
+                $transactionsRejected = $this->transaction_model->get_transactions_rejected();
+                $resultTransactionAccepted = array_map('mapResultTransaction', $transactionsAccepted);
+                $resultTransactionRejected = array_map('mapResultTransaction', $transactionsRejected);
+
+                
+
+                $result=array_merge($resultTransactionAccepted,$resultTransactionRejected);
+
+                $this->response($result);
+            }
+        }
+        $this->response([
+            'status' => 'Authorization failed'
+        ], REST_Controller::HTTP_FORBIDDEN);
+    }
 }

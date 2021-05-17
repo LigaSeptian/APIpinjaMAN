@@ -23,6 +23,11 @@ class Transaction_model extends CI_Model
 
     public function get_transactions_pending(){
         return $this->db->get_where($this->table_name, ['status' => 'menunggu konfirmasi'])->result_array();
-
+    }
+    public function get_transactions_accepted(){
+        return $this->db->get_where($this->table_name, ['status' => 'dibayar'])->result_array();
+    }
+    public function get_transactions_rejected(){
+        return $this->db->get_where($this->table_name, ['status' => 'ditolak'])->result_array();
     }
 }
