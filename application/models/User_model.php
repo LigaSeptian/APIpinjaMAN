@@ -16,4 +16,10 @@ class User_model extends CI_Model
     {
         return $this->db->get_where($this->table_name, ['email' => $email])->row_array();
     }
+
+    public function update_user_limit_remaining($nik, $limit_remaining)
+    {
+        $this->db->where('nik', $nik);
+        $this->db->update($this->table_name, ['sisa_limit' => $limit_remaining]);
+    }
 }

@@ -16,6 +16,7 @@ class User extends REST_Controller
     {
         parent::__construct();
         $this->load->model('user_model');
+        $this->load->model('transaction_model');
     }
 
     public function register_post()
@@ -129,21 +130,15 @@ class User extends REST_Controller
     {
         if (isset($_SERVER['PHP_AUTH_USER'])) {
             $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
-            if ($user) {
-                if (password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
-                    $this->response([
-                        'nik' => $user['nik'],
-                        'status' => $user['status'],
-                        'data' => [
-                            'limit' => $user['limit_pinjaman'],
-                            'limit_remaining' => $user['sisa_limit']
-                        ]
-                    ]);
-                } else {
-                    $this->response([
-                        'status' => 'Authorization failed'
-                    ], REST_Controller::HTTP_FORBIDDEN);
-                }
+            if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+                $this->response([
+                    'nik' => $user['nik'],
+                    'status' => $user['status'],
+                    'data' => [
+                        'limit' => $user['limit_pinjaman'],
+                        'limit_remaining' => $user['sisa_limit']
+                    ]
+                ]);
             } else {
                 $this->response([
                     'status' => 'Authorization failed'
@@ -154,5 +149,57 @@ class User extends REST_Controller
                 'status' => 'Authorization failed'
             ], REST_Controller::HTTP_FORBIDDEN);
         }
+    }
+
+    public function transaction_post($nik)
+    {
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+                if ($user['status'] == 'accepted') {
+                    $json_data = json_decode($this->input->raw_input_stream, true);
+                    $data = [
+                        'nik' => $user['nik'],
+                        'jumlah' => $json_data['loan']['amount'],
+                        'tenggat_waktu' => $json_data['loan']['deadline'],
+                        'biaya_admin' => $json_data['loan']['admin_fee'],
+                        'total_pinjaman' => $json_data['loan']['amount'] + $json_data['loan']['admin_fee'],
+                        'bank' => $json_data['receiver']['bank'],
+                        'no_rekening' => $json_data['receiver']['account_number']
+                    ];
+
+                    $limit_remaining = $user['sisa_limit'] - $json_data['loan']['amount'];
+
+                    if ($limit_remaining >= 0) {
+                        $this->user_model->update_user_limit_remaining($user['nik'], $limit_remaining);
+                        $this->transaction_model->add_transactions($data);
+                        $this->response([
+                            'message' => 'Loan success',
+                            'data' => [
+                                'amount' => $json_data['loan']['amount'],
+                                'limit_remaining' => $limit_remaining
+                            ]
+                        ]);
+                    } else {
+                        $this->response([
+                            'message' => 'Loan failed',
+                            'data' => [
+                                'error_message' => 'Loan mount is bigger than your remaining loan limit'
+                            ]
+                        ]);
+                    }
+                } else {
+                    $this->response([
+                        'message' => 'Loan failed',
+                        'data' => [
+                            'error_message' => 'Your apllication status is not accepted yet'
+                        ]
+                    ]);
+                }
+            }
+        }
+        $this->response([
+            'status' => 'Authorization failed'
+        ], REST_Controller::HTTP_FORBIDDEN);
     }
 }

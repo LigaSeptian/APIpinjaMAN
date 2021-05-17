@@ -66,5 +66,6 @@ $route = [
     'translate_uri_dashes' => TRUE,
     'api/example/users/(:num)' => 'api/example/users/id/$1',
     'api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)' => 'api/example/users/id/$1/format/$3$4',
-    'api/user/(:num)/limit' => 'api/user/limit/$1'
+    'api/user/(:num)/limit' => 'api/user/limit/$1',
+    'api/user/(:num)/transaction' => 'api/user/transaction/$1'
 ];
