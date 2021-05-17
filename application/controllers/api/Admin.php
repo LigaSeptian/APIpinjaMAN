@@ -47,6 +47,7 @@ class Admin extends REST_Controller
             if ($user['role'] == 'admin' && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
                 $transactions = $this->transaction_model->get_transactions_pending();
                 $resultTransaction = array_map('mapResultTransaction', $transactions);
+                $resultUser = array_map('mapResultRegistration', $this->user_model->get_users_pending());
                 $result = array_merge($resultTransaction, $resultUser);
                 $this->response($result);
             }
