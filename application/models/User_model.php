@@ -22,4 +22,8 @@ class User_model extends CI_Model
         $this->db->where('nik', $nik);
         $this->db->update($this->table_name, ['sisa_limit' => $limit_remaining]);
     }
+
+    public function get_users_pending(){
+        return $this->db->get_where($this->table_name, ['status' => 'waiting'])->result_array();
+    }
 }
