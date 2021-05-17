@@ -124,4 +124,35 @@ class User extends REST_Controller
             ]);
         }
     }
+
+    public function limit_get($nik)
+    {
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user) {
+                if (password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+                    $this->response([
+                        'nik' => $user['nik'],
+                        'status' => $user['status'],
+                        'data' => [
+                            'limit' => $user['limit_pinjaman'],
+                            'limit_remaining' => $user['sisa_limit']
+                        ]
+                    ]);
+                } else {
+                    $this->response([
+                        'status' => 'Authorization failed'
+                    ], REST_Controller::HTTP_FORBIDDEN);
+                }
+            } else {
+                $this->response([
+                    'status' => 'Authorization failed'
+                ], REST_Controller::HTTP_FORBIDDEN);
+            }
+        } else {
+            $this->response([
+                'status' => 'Authorization failed'
+            ], REST_Controller::HTTP_FORBIDDEN);
+        }
+    }
 }
