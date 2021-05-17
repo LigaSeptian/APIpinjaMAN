@@ -23,6 +23,7 @@ class User extends REST_Controller
         $nik = $this->post('nik');
         $name = $this->post('name');
         $email = $this->post('email');
+        $pin = $this->post('pin');
         $data = [
             'nik' => $nik,
             'nama' => $name,
@@ -36,7 +37,8 @@ class User extends REST_Controller
             'status_pekerjaan' => $this->post('job_status'),
             'posisi' => $this->post('position'),
             'lama_bekerja' => $this->post('work_length'),
-            'penghasilan_per_bulan' => $this->post('monthly_income')
+            'penghasilan_per_bulan' => $this->post('monthly_income'),
+            'pin' => password_hash($pin, PASSWORD_DEFAULT)
         ];
 
         foreach ($data as $key => $value) {
@@ -84,6 +86,42 @@ class User extends REST_Controller
                 'status' => 'Error',
                 'message' => 'Failed to upload'
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function login_post()
+    {
+        $email = $this->post('email');
+        $pin = $this->post('pin');
+        $user = $this->user_model->get_user_by_email($email);
+        if ($user) {
+            if (password_verify($pin, $user['pin'])) {
+                $data = [
+                    'nik' => $user['nik'],
+                    'email' => $user['email'],
+                    'role' => $user['role'],
+                    'name' => $user['nama'],
+                    'token' => base64_encode($email . ':' . $pin)
+                ];
+                $this->response([
+                    'message' => 'Login success',
+                    'data' => $data
+                ]);
+            } else {
+                $this->response([
+                    'message' => 'Login failed',
+                    'data' => [
+                        'auth_message' => 'Wrong password'
+                    ]
+                ]);
+            }
+        } else {
+            $this->response([
+                'message' => 'Login failed',
+                'data' => [
+                    'auth_message' => 'User not found'
+                ]
+            ]);
         }
     }
 }
