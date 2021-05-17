@@ -90,9 +90,12 @@ class Admin extends REST_Controller
                 $resultTransactionAccepted = array_map('mapResultTransaction', $transactionsAccepted);
                 $resultTransactionRejected = array_map('mapResultTransaction', $transactionsRejected);
 
-                
+                $userAccepted = $this->user_model->get_users_accepted();
+                $userRejected = $this->user_model->get_users_rejected();
+                $resultUserAccepted = array_map('mapResultRegistration', $userAccepted);
+                $resultUserRejected = array_map('mapResultRegistration', $userRejected);
 
-                $result=array_merge($resultTransactionAccepted,$resultTransactionRejected);
+                $result=array_merge($resultTransactionAccepted,$resultTransactionRejected,$resultUserAccepted,$resultUserRejected);
 
                 $this->response($result);
             }
