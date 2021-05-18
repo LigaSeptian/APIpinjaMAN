@@ -275,4 +275,26 @@ class User extends REST_Controller
             }
         }
     }
+
+    public function pin_post($nik)
+    {
+        $pin = $this->post('pin');
+
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if($user){
+                if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+
+                    $pinUpdate = $this->user_model->update_user_pin($user['nik'],$pin);
+                    $this->response([
+                        'status' => 'Success',
+                        'message' => 'Pin change is success',
+                        'data'=> [
+                            'pin' => $pin
+                        ]
+                    ]);
+                }
+            }
+        }
+    }
 }
