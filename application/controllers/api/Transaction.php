@@ -71,4 +71,41 @@ class Transaction extends REST_Controller
             'payment_proof' => base_url('upload/payment_proof/transaction_' . $id . '.png')
         ]);
     }
+
+    public function payment_post($id)
+    {
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $admin = $this->user_model->get_admin_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($admin['password'] == $_SERVER['PHP_AUTH_PW']) {
+                $json_data = json_decode($this->input->raw_input_stream, true);
+                $status = $json_data['status'];
+                $transaction = $this->transaction_model->get_transaction_detail_by_id($id);
+                if ($status == 'accepted') {
+                    $data = [
+                        'status' => 'dibayar'
+                    ];
+                } else if ($status == 'rejected') {
+                    $data = [
+                        'status' => 'pembayaran ditolak'
+                    ];
+                } else {
+                    $this->response([
+                        'status' => 'Error',
+                        'message' => 'Invalid data'
+                    ], REST_Controller::HTTP_UNPROCESSABLE_ENTITY);
+                }
+                $this->transaction_model->update_payment_status($id, $data);
+                $this->response([
+                    'message' => 'Request successfully executed',
+                    'data' => [
+                        'nik' => $transaction['nik'],
+                        'status' => $status
+                    ]
+                ]);
+            }
+        }
+        $this->response([
+            'status' => 'Authorization failed'
+        ], REST_Controller::HTTP_FORBIDDEN);
+    }
 }

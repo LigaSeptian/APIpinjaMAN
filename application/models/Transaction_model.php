@@ -48,4 +48,10 @@ class Transaction_model extends CI_Model
     {
         return $this->db->get_where($this->table_name, ['id' => $id])->row_array();
     }
+
+    public function update_payment_status($id, $data)
+    {
+        $this->db->where('id', $id);
+        $this->db->update($this->table_name, $data);
+    }
 }
