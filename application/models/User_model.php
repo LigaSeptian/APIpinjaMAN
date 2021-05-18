@@ -41,4 +41,15 @@ class User_model extends CI_Model
     {
         return $this->db->get_where($this->table_name, ['nik' => $nik])->row_array();
     }
+
+    public function get_admin_by_email($email)
+    {
+        return $this->db->get_where('admins', ['email' => $email])->row_array();
+    }
+
+    public function update_registration_status($nik, $data)
+    {
+        $this->db->where('nik', $nik);
+        $this->db->update($this->table_name, $data);
+    }
 }

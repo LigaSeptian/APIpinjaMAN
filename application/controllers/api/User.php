@@ -290,4 +290,45 @@ class User extends REST_Controller
             ]
         ]);
     }
+
+    public function registration_post($nik)
+    {
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $admin = $this->user_model->get_admin_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($admin['password'] == $_SERVER['PHP_AUTH_PW']) {
+                $json_data = json_decode($this->input->raw_input_stream, true);
+                $status = $json_data['status'];
+                if ($status == 'accepted') {
+                    $data = [
+                        'status' => $status,
+                        'limit_pinjaman' => $json_data['loan_limit'],
+                        'sisa_limit' => $json_data['loan_limit']
+                    ];
+                } else if ($status == 'rejected') {
+                    $data = [
+                        'status' => $status,
+                        'alasan_penolakan' => $json_data['reason'],
+                        'limit_pinjaman' => 0,
+                        'sisa_limit' => 0
+                    ];
+                } else {
+                    $this->response([
+                        'status' => 'Error',
+                        'message' => 'Invalid data'
+                    ], REST_Controller::HTTP_UNPROCESSABLE_ENTITY);
+                }
+                $this->user_model->update_registration_status($nik, $data);
+                $this->response([
+                    'message' => 'Request successfully executed',
+                    'data' => [
+                        'nik' => $nik,
+                        'status' => $status
+                    ]
+                ]);
+            }
+        }
+        $this->response([
+            'status' => 'Authorization failed'
+        ], REST_Controller::HTTP_FORBIDDEN);
+    }
 }
