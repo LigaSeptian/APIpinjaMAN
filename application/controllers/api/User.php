@@ -331,4 +331,48 @@ class User extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
+    public function email_post($nik)
+    {
+        $email = $this->post('email');
+
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+
+                $old_email = $user['email'];
+
+                $emailUpdate = $this->user_model->update_user_email($user['nik'], $email);
+                $this->response([
+                    'status' => 'Success',
+                    'message' => 'Email change is success',
+                    'data' => [
+                        'old_email' => $old_email,
+                        'new_email' => $email
+                    ]
+                ]);
+            }
+        }
+    }
+
+    public function pin_post($nik)
+    {
+        $pin = $this->post('pin');
+
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user) {
+                if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+
+                    $pinUpdate = $this->user_model->update_user_pin($user['nik'], $pin);
+                    $this->response([
+                        'status' => 'Success',
+                        'message' => 'Pin change is success',
+                        'data' => [
+                            'pin' => $pin
+                        ]
+                    ]);
+                }
+            }
+        }
+    }
 }

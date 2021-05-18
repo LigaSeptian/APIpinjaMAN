@@ -92,8 +92,9 @@ CREATE TABLE `users` (
   `role` enum('user','admin','master admin','') NOT NULL,
   `limit_pinjaman` int(11) NOT NULL DEFAULT 0,
   `sisa_limit` int(11) NOT NULL DEFAULT 0,
-  `alasan_penolakan` text DEFAULT NULL,
-  `status` enum('accepted','waiting','rejected','') NOT NULL DEFAULT 'waiting',
+  `status` enum('accepted','waiting','rejected') NOT NULL DEFAULT 'waiting',
+  `otp` varchar(6) DEFAULT NULL,
+  `otp_expired` datetime DEFAULT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -104,6 +105,9 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`nik`, `nama`, `no_telepon`, `email`, `nama_orang_tua`, `pendidikan_terakhir`, `status_perkawinan`, `alamat`, `nama_perusahaan`, `status_pekerjaan`, `posisi`, `lama_bekerja`, `penghasilan_per_bulan`, `pin`, `role`, `limit_pinjaman`, `sisa_limit`, `alasan_penolakan`, `status`, `date_created`) VALUES
 ('1234567890123456', 'uzumaki naruto', '081367631999', '93rezao@gmail.com', 'minato', 's3', 'kawin', 'desa konoha, uzumaki naruto', 'kantor hokage konoha', 'pekerja tetap', 'hokage', 2, 10000000, '101010', 'user', 2000000, 500000, NULL, 'accepted', '2021-05-17 18:29:00'),
 ('3275111608990002', 'Riwandy', '085156342195', 'riwandys@gmail.com', 'Niko Amandus', 's1', 'belum kawin', 'Jl. Mustikasari', 'Tokopedia', 'pekerja tetap', 'Software Engineer', 2, 10000000, '$2y$10$3C10BA0umjKWntvqkwSSi.FsjjQpm25Gwm64rRsSOuKjTLOPcA.Qu', 'user', 0, 0, 'Identitas tidak jelas', 'rejected', '2021-05-18 02:58:39');
+INSERT INTO `users` (`nik`, `nama`, `no_telepon`, `email`, `nama_orang_tua`, `pendidikan_terakhir`, `status_perkawinan`, `alamat`, `nama_perusahaan`, `status_pekerjaan`, `posisi`, `lama_bekerja`, `penghasilan_per_bulan`, `pin`, `role`, `limit_pinjaman`, `sisa_limit`, `status`, `otp`, `otp_expired`, `date_created`) VALUES
+('1234567890123456', 'uzumaki naruto', '081367631999', '93rezao@gmail.com', ' minato', 's3', 'kawin', 'desa konoha uzumaki naruto', 'kantor hokage konoha', 'pekerja tetap', 'hokage', 2, 10000000, '000000', 'user', 2000000, 500000, 'accepted', '804506', '2021-05-18 12:04:56', '2021-05-17 19:32:34'),
+('2234567890123456', 'sasuke', '081367631998', '94rezao@gmail.com', 'itachi', 's3', 'kawin', 'desa konoha sasuke', 'rumah orochimaru', 'pekerja tetap', 'berkelana', 3, 8000000, '$2y$10$lDvYQiv88E9msKLjg3/db.B5sZOadBJCo4fzZOmtcS8z4s5CNscBe', 'admin', 0, 0, 'accepted', NULL, NULL, '2021-05-17 20:07:52');
 
 --
 -- Indexes for dumped tables
