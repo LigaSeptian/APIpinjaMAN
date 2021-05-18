@@ -230,7 +230,7 @@ class User extends REST_Controller
 
     public function history_get($nik)
     {
-        function mapResult($array)
+        function mapResults($array)
         {
             return [
                 'id' => $array['id'],
@@ -244,7 +244,7 @@ class User extends REST_Controller
             $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
             if ($user['nik'] == $nik && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
                 $transactions = $this->transaction_model->get_transactions_history_by_nik($nik);
-                $result = array_map('mapResult', $transactions);
+                $result = array_map('mapResults', $transactions);
                 $this->response($result);
             }
         }
@@ -252,6 +252,4 @@ class User extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
-    
-    
 }

@@ -59,7 +59,7 @@ class Admin extends REST_Controller
 
     public function history_get()
     {
-        function mapResultRegistration($array)
+        function mapResultRegistrations($array)
         {
             return [
                 'type' => 'registration',
@@ -70,7 +70,7 @@ class Admin extends REST_Controller
                 ]
             ];
         }
-        function mapResultTransaction($array)
+        function mapResultTransactions($array)
         {
             return [
                 'type' => 'payment',
@@ -87,15 +87,15 @@ class Admin extends REST_Controller
             if ($user['role'] == 'admin' && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
                 $transactionsAccepted = $this->transaction_model->get_transactions_accepted();
                 $transactionsRejected = $this->transaction_model->get_transactions_rejected();
-                $resultTransactionAccepted = array_map('mapResultTransaction', $transactionsAccepted);
-                $resultTransactionRejected = array_map('mapResultTransaction', $transactionsRejected);
+                $resultTransactionAccepted = array_map('mapResultTransactions', $transactionsAccepted);
+                $resultTransactionRejected = array_map('mapResultTransactions', $transactionsRejected);
 
                 $userAccepted = $this->user_model->get_users_accepted();
                 $userRejected = $this->user_model->get_users_rejected();
-                $resultUserAccepted = array_map('mapResultRegistration', $userAccepted);
-                $resultUserRejected = array_map('mapResultRegistration', $userRejected);
+                $resultUserAccepted = array_map('mapResultRegistrations', $userAccepted);
+                $resultUserRejected = array_map('mapResultRegistrations', $userRejected);
 
-                $result=array_merge($resultTransactionAccepted,$resultTransactionRejected,$resultUserAccepted,$resultUserRejected);
+                $result = array_merge($resultTransactionAccepted, $resultTransactionRejected, $resultUserAccepted, $resultUserRejected);
 
                 $this->response($result);
             }
