@@ -78,5 +78,31 @@ class Otp extends REST_Controller
         }
     }
 
-    
+    public function validate_post(){
+
+        $data = [
+            'email' => $this->post('email'),
+            'otp_code' => $this->post('otp')
+        ];
+
+        $user = $this->user_model->get_user_by_email_otp($data['email'], $data['otp_code']);
+        if(!$user){
+            $this->response([
+                'message' => 'OTP Validated',
+                'data'=> [
+                    'status' => 'Failed',
+                    'auth_message' => 'Wrong OTP Code',
+                ]
+            ]); 
+        }else{
+            $this->response([
+                'message' => 'OTP Validated',
+                'data'=> [
+                    'status' => 'Success',
+                    'email' => $data['email'],
+                    'nik' => $user['nik'],
+                ]
+            ]); 
+        }
+    }
 }
