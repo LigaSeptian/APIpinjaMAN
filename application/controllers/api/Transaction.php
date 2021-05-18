@@ -53,4 +53,22 @@ class Transaction extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
+
+    public function details_get($id)
+    {
+        $transaction = $this->transaction_model->get_transaction_detail_by_id($id);
+        $this->response([
+            'receiver' => [
+                'bank' => $transaction['bank'],
+                'account_number' => $transaction['no_rekening'],
+            ],
+            'loan' => [
+                'amount' => $transaction['total_pinjaman'],
+                'deadline' => $transaction['tenggat_waktu'],
+                'admin_fee' => $transaction['biaya_admin'],
+                'total' => $transaction['total_pinjaman'],
+            ],
+            'payment_proof' => base_url('upload/payment_proof/transaction_' . $id . '.png')
+        ]);
+    }
 }

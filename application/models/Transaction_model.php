@@ -43,4 +43,9 @@ class Transaction_model extends CI_Model
             'waktu_pembayaran' => $payment_time
         ]);
     }
+
+    public function get_transaction_detail_by_id($id)
+    {
+        return $this->db->get_where($this->table_name, ['id' => $id])->row_array();
+    }
 }
