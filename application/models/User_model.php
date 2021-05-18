@@ -23,15 +23,22 @@ class User_model extends CI_Model
         $this->db->update($this->table_name, ['sisa_limit' => $limit_remaining]);
     }
 
-    public function get_users_pending(){
+    public function get_users_pending()
+    {
         return $this->db->get_where($this->table_name, ['status' => 'waiting'])->result_array();
     }
 
-    public function get_users_accepted(){
-        return $this->db->get_where($this->table_name, ['status' => 'accepted','role' => 'user'])->result_array();
+    public function get_users_accepted()
+    {
+        return $this->db->get_where($this->table_name, ['status' => 'accepted', 'role' => 'user'])->result_array();
     }
-    public function get_users_rejected(){
-        return $this->db->get_where($this->table_name, ['status' => 'rejected','role' => 'user'])->result_array();
+    public function get_users_rejected()
+    {
+        return $this->db->get_where($this->table_name, ['status' => 'rejected', 'role' => 'user'])->result_array();
+    }
+
+    public function get_user_by_nik($nik)
+    {
+        return $this->db->get_where($this->table_name, ['nik' => $nik])->row_array();
     }
 }
- 

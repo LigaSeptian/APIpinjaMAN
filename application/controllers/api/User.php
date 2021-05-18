@@ -252,4 +252,42 @@ class User extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
+
+    public function details_get($nik)
+    {
+        $user = $this->user_model->get_user_by_nik($nik);
+        $registration_info = [];
+        if ($user['status'] == 'accepted') {
+            $registration_info = [
+                'loan_limit' => $user['limit_pinjaman'],
+                'limit_remaining' => $user['sisa_limit']
+            ];
+        } else if ($user['status'] == 'rejected') {
+            $registration_info = [
+                'cause_of_rejection' => $user['alasan_penolakan']
+            ];
+        }
+
+        $this->response([
+            'name' => $user['nama'],
+            'nik' => $user['nik'],
+            'phone' => $user['no_telepon'],
+            'email' => $user['email'],
+            'parent_name' => $user['nama_orang_tua'],
+            'education' => $user['pendidikan_terakhir'],
+            'marriage_status' => $user['status_perkawinan'],
+            'address' => $user['alamat'],
+            'job' => [
+                'company_name' => $user['nama_perusahaan'],
+                'job_status' => $user['status_pekerjaan'],
+                'position' => $user['posisi'],
+                'work_length' => $user['lama_bekerja'],
+                'monthly_income' => $user['penghasilan_per_bulan'],
+            ],
+            'registration' => [
+                'status' => $user['status'],
+                'data' => $registration_info
+            ]
+        ]);
+    }
 }

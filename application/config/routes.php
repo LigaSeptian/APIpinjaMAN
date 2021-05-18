@@ -70,5 +70,6 @@ $route = [
     'api/user/(:num)/transaction' => 'api/user/transaction/$1',
     'api/user/(:num)/transactions' => 'api/user/transactions/$1',
     'api/user/(:num)/transactions/history' => 'api/user/history_get/$1',
-    'api/transaction/(:num)/payment-proof' => 'api/transaction/pay/$1'
+    'api/transaction/(:num)/payment-proof' => 'api/transaction/pay/$1',
+    'api/user/(:num)/details' => 'api/user/details/$1',
 ];
