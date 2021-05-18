@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 17 Bulan Mei 2021 pada 23.28
+-- Waktu pembuatan: 18 Bulan Mei 2021 pada 12.16
 -- Versi server: 10.4.17-MariaDB
 -- Versi PHP: 7.4.15
 
@@ -46,7 +46,7 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`id`, `nik`, `jumlah`, `tenggat_waktu`, `biaya_admin`, `total_pinjaman`, `bank`, `no_rekening`, `status`, `waktu_pembayaran`, `date_created`) VALUES
-(10, '1234567890123456', 1500000, '2021-06-08', 1500, 1500000, 'BCA', '00000000', 'ditolak', '2021-05-18 01:29:28', '2021-05-17 19:39:47');
+(10, '1234567890123456', 1500000, '2021-06-08', 1500, 1500000, 'BCA', '00000000', 'dibayar', '2021-05-18 01:29:28', '2021-05-17 19:39:47');
 
 -- --------------------------------------------------------
 
@@ -73,6 +73,8 @@ CREATE TABLE `users` (
   `limit_pinjaman` int(11) NOT NULL DEFAULT 0,
   `sisa_limit` int(11) NOT NULL DEFAULT 0,
   `status` enum('accepted','waiting','rejected') NOT NULL DEFAULT 'waiting',
+  `otp` varchar(6) DEFAULT NULL,
+  `otp_expired` datetime DEFAULT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -80,9 +82,9 @@ CREATE TABLE `users` (
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`nik`, `nama`, `no_telepon`, `email`, `nama_orang_tua`, `pendidikan_terakhir`, `status_perkawinan`, `alamat`, `nama_perusahaan`, `status_pekerjaan`, `posisi`, `lama_bekerja`, `penghasilan_per_bulan`, `pin`, `role`, `limit_pinjaman`, `sisa_limit`, `status`, `date_created`) VALUES
-('1234567890123456', 'uzumaki naruto', '081367631999', '93rezao@gmail.com', ' minato', 's3', 'kawin', 'desa konoha uzumaki naruto', 'kantor hokage konoha', 'pekerja tetap', 'hokage', 2, 10000000, '$2y$10$vT9Kc9YiIzk1e7GvAilQ/uy4jnewhub78gbxC43GpdfSaIZ2aIijS', 'user', 2000000, 500000, 'accepted', '2021-05-17 19:32:34'),
-('2234567890123456', 'sasuke', '081367631998', '94rezao@gmail.com', 'itachi', 's3', 'kawin', 'desa konoha sasuke', 'rumah orochimaru', 'pekerja tetap', 'berkelana', 3, 8000000, '$2y$10$lDvYQiv88E9msKLjg3/db.B5sZOadBJCo4fzZOmtcS8z4s5CNscBe', 'admin', 0, 0, 'accepted', '2021-05-17 20:07:52');
+INSERT INTO `users` (`nik`, `nama`, `no_telepon`, `email`, `nama_orang_tua`, `pendidikan_terakhir`, `status_perkawinan`, `alamat`, `nama_perusahaan`, `status_pekerjaan`, `posisi`, `lama_bekerja`, `penghasilan_per_bulan`, `pin`, `role`, `limit_pinjaman`, `sisa_limit`, `status`, `otp`, `otp_expired`, `date_created`) VALUES
+('1234567890123456', 'uzumaki naruto', '081367631999', '93rezao@gmail.com', ' minato', 's3', 'kawin', 'desa konoha uzumaki naruto', 'kantor hokage konoha', 'pekerja tetap', 'hokage', 2, 10000000, '000000', 'user', 2000000, 500000, 'accepted', '804506', '2021-05-18 12:04:56', '2021-05-17 19:32:34'),
+('2234567890123456', 'sasuke', '081367631998', '94rezao@gmail.com', 'itachi', 's3', 'kawin', 'desa konoha sasuke', 'rumah orochimaru', 'pekerja tetap', 'berkelana', 3, 8000000, '$2y$10$lDvYQiv88E9msKLjg3/db.B5sZOadBJCo4fzZOmtcS8z4s5CNscBe', 'admin', 0, 0, 'accepted', NULL, NULL, '2021-05-17 20:07:52');
 
 --
 -- Indexes for dumped tables
