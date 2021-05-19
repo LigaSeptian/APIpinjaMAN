@@ -73,7 +73,9 @@ class User extends REST_Controller
                     'data' => [
                         'nik' => $nik,
                         'name' => $name,
-                        'email' => $email
+                        'email' => $email,
+                        'role' => 'user',
+                        'token' => base64_encode($email . ':' . $pin)
                     ]
                 ], REST_Controller::HTTP_CREATED);
             } else {
