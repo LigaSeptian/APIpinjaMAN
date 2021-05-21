@@ -43,13 +43,18 @@ class Admin extends REST_Controller
             ];
         }
         if (isset($_SERVER['PHP_AUTH_USER'])) {
-            $user = $this->user_model->get_user_by_email($_SERVER['PHP_AUTH_USER']);
-            if ($user['role'] == 'admin' && password_verify($_SERVER['PHP_AUTH_PW'], $user['pin'])) {
+            $user = $this->user_model->get_admin_by_email($_SERVER['PHP_AUTH_USER']);
+            if ($user['email'] == $_SERVER['PHP_AUTH_USER'] && $_SERVER['PHP_AUTH_PW'] == $user['pin']) {
+                $user_count = $this->user_model->get_user_count();
                 $transactions = $this->transaction_model->get_transactions_pending();
                 $resultTransaction = array_map('mapResultTransaction', $transactions);
                 $resultUser = array_map('mapResultRegistration', $this->user_model->get_users_pending());
                 $result = array_merge($resultTransaction, $resultUser);
-                $this->response($result);
+                $this->response([
+                    'pending_confirmation' => $user_count['pending_users'],
+                    'confirmed_user' => $user_count['confirmed_users'],
+                    'pending_transaction_list' => $result
+                ]);
             }
         }
         $this->response([
@@ -104,6 +109,4 @@ class Admin extends REST_Controller
             'status' => 'Authorization failed'
         ], REST_Controller::HTTP_FORBIDDEN);
     }
-
-    
 }

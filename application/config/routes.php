@@ -69,10 +69,12 @@ $route = [
     'api/user/(:num)/limit' => 'api/user/limit/$1',
     'api/user/(:num)/transaction' => 'api/user/transaction/$1',
     'api/user/(:num)/transactions' => 'api/user/transactions/$1',
-    'api/user/(:num)/transactions/history' => 'api/user/history_get/$1',
+    'api/user/(:num)/transactions/history' => 'api/user/history/$1',
     'api/transaction/(:num)/payment-proof' => 'api/transaction/pay/$1',
     'api/user/(:num)/details' => 'api/user/details/$1',
     'api/transaction/(:num)' => 'api/transaction/details/$1',
     'api/user/(:num)/registration' => 'api/user/registration/$1',
     'api/transaction/(:num)/payment' => 'api/transaction/payment/$1',
+    'api/admin/pending-transactions' => 'api/admin/pending',
+    'api/admin/transactions-history' => 'api/admin/transaction'
 ];

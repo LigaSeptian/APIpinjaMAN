@@ -14,7 +14,7 @@ class Transaction_model extends CI_Model
 
     public function get_transactions_by_nik($nik)
     {
-        return $this->db->get_where($this->table_name, ['nik' => $nik])->result_array();
+        return $this->db->get_where($this->table_name, ['nik' => $nik, 'status !=' => 'dibayar'])->result_array();
     }
 
     public function get_transactions_history_by_nik($nik)

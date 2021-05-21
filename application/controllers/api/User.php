@@ -97,6 +97,7 @@ class User extends REST_Controller
         $email = $this->post('email');
         $pin = $this->post('pin');
         $user = $this->user_model->get_user_by_email($email);
+        $admin = $this->user_model->get_admin_by_email($email);
         if ($user) {
             if (password_verify($pin, $user['pin'])) {
                 $data = [
@@ -116,6 +117,20 @@ class User extends REST_Controller
                     'data' => [
                         'auth_message' => 'Wrong password'
                     ]
+                ]);
+            }
+        } else if ($admin) {
+            if ($email == $admin['email'] && $pin == $admin['pin']) {
+                $data = [
+                    'nik' => '',
+                    'email' => $admin['email'],
+                    'role' => 'admin',
+                    'name' => $admin['name'],
+                    'token' => base64_encode($email . ':' . $pin)
+                ];
+                $this->response([
+                    'message' => 'Login success',
+                    'data' => $data
                 ]);
             }
         } else {
@@ -214,7 +229,9 @@ class User extends REST_Controller
                 'amount' => $array['jumlah'],
                 'admin_fee' => $array['biaya_admin'],
                 'total' => $array['total_pinjaman'],
-                'deadline' => $array['tenggat_waktu']
+                'deadline' => $array['tenggat_waktu'],
+                'bank' => $array['bank'],
+                'account_number' => $array['no_rekening']
             ];
         }
         if (isset($_SERVER['PHP_AUTH_USER'])) {
@@ -239,7 +256,9 @@ class User extends REST_Controller
                 'amount' => $array['jumlah'],
                 'admin_fee' => $array['biaya_admin'],
                 'total' => $array['total_pinjaman'],
-                'paid_date' => $array['waktu_pembayaran']
+                'paid_date' => $array['waktu_pembayaran'],
+                'bank' => $array['bank'],
+                'account_number' => $array['no_rekening']
             ];
         }
         if (isset($_SERVER['PHP_AUTH_USER'])) {

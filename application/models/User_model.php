@@ -80,4 +80,14 @@ class User_model extends CI_Model
         $this->db->where('nik', $nik);
         $this->db->update($this->table_name, $data);
     }
+
+    public function get_user_count()
+    {
+        $pending_users = $this->db->get_where($this->table_name, ['status' => 'waiting'])->num_rows();
+        $confirmed_users = $this->db->get_where($this->table_name, ['status' => 'accepted'])->num_rows();
+        return [
+            'pending_users' => $pending_users,
+            'confirmed_users' => $confirmed_users
+        ];
+    }
 }
