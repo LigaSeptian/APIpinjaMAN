@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'pinjaman-db',
+	'hostname' => 'us-cdbr-east-03.cleardb.com',
+	'username' => 'b1a78045365c76',
+	'password' => '74ee74a3',
+	'database' => 'heroku_e0d8f740fd1c106',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
