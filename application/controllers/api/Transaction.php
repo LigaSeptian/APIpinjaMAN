@@ -76,7 +76,7 @@ class Transaction extends REST_Controller
     {
         if (isset($_SERVER['PHP_AUTH_USER'])) {
             $admin = $this->user_model->get_admin_by_email($_SERVER['PHP_AUTH_USER']);
-            if ($admin['password'] == $_SERVER['PHP_AUTH_PW']) {
+            if ($admin['pin'] == $_SERVER['PHP_AUTH_PW']) {
                 $json_data = json_decode($this->input->raw_input_stream, true);
                 $status = $json_data['status'];
                 $transaction = $this->transaction_model->get_transaction_detail_by_id($id);
